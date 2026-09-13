@@ -2,7 +2,7 @@ import time
 import random
 
 sala = ["paredes comuns", "escadarias longas para baixo", "escadarias longas para cima", "espinhos pontudos"]
-elementos = ["Fogo", "Água", "Terra", "Ar", "Gelo", "Luz", "Trevas", "Raio", "Veneno"]
+elementos = ["Fogo", "Água", "Terra", "Ar", "Gelo", "Luz", "Trevas", "Raio", "Natureza", "Veneno"]
 inimigo = [False, True]
 recompensa = [False, True]
 
@@ -20,6 +20,7 @@ pocoes = ["Poção de vida", "Poção de mana", "Poção de força", "Poção de
 armaduras = ["Armadura de Couro", "Armadura de Ferro", "Armadura de Aço", "Armadura de platina"]
 
 class Personagem:
+        
         def __init__(self, nome, classe, elemento, vida, ataque, defesa, mana, exp, level, pontos, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa):
             self.nome = nome
             self.classe = classe
@@ -74,9 +75,12 @@ class Personagem:
             time.sleep(0.5)
             print("8. Raio")
             time.sleep(0.5)
+            print("9. Natureza")
+            time.sleep(0.5)
+            print("10. Veneno\n")
 
             try:
-                elemento = input("Escolha o elemento do seu personagem (1/2/3/4/5/6/7/8): ")
+                elemento = input("Escolha o elemento do seu personagem (1/2/3/4/5/6/7/8/9/10): ")
 
                 if elemento == "1":
                     elemento = "Fogo"  
@@ -102,6 +106,12 @@ class Personagem:
                 elif elemento == "8":
                     elemento = "Raio"
 
+                elif elemento == "9":
+                    elemento = "Natureza"
+
+                elif elemento == "10":
+                    elemento = "Veneno"
+
             except ValueError:
                 print("Valor invalido. Digite apenas números")
 
@@ -117,9 +127,8 @@ class Personagem:
             
             else:
                 print("Classe inválida.")
-                return None
+                return None                     
 
-            
 
 class Salas:
     def __init__(self, estrutura, elementos, inimigo, recompensa):
@@ -169,6 +178,10 @@ class Salas:
         
         elif sala_nova.elementos == "Luz":
             print("luzes intensas invadem a sala.")
+            time.sleep(1)
+        
+        elif sala_nova.elementos == "Natureza":
+            print("A sala está cheia de plantas e flores.")
             time.sleep(1)
 
 
@@ -260,6 +273,79 @@ class Item:
         return item_gerado
         time.sleep(1)
 
+
+class Magias:
+    
+    def __init__(self, nome, elemento, dano, custo_mana, descricao):
+        self.nome = nome
+        self.elemento = elemento
+        self.dano = dano
+        self.custo_mana = custo_mana
+        self.descricao = descricao
+
+
+magias = {
+    "magias_fogo": [
+        Magias("Bola de Fogo", "Fogo", 20, 10, "Lança uma bola de fogo que causa dano ao inimigo."),
+        Magias("Explosão Flamejante", "Fogo", 40, 30, "Cria uma explosão de chamas ao atingir o inimigo."),
+        Magias("Rajada em brasa", "Fogo", 30, 20, "Dispara uma rajada de chamas que causa dano ao inimigo."),
+    ],
+
+    "magias_agua": [
+        Magias("Esguixo de Água", "Água", 20, 10, "Dispara um jato de água que causa dano ao inimigo."),
+        Magias("Tsunami", "Água", 40, 30, "Cria uma grande onda que causa dano ao inimigo."),
+        Magias("Chuva", "Água", 0, 30, "Cria uma chuva cortante que causa dano ao inimigo."),
+    ],
+
+    "magias_terra": [
+        Magias("Cascalho Cortante", "Terra", 20, 10, "Dispara pequenas pedras afiadas que causam dano ao inimigo."),
+        Magias("Terremoto", "Terra", 40, 30, "Causa um terremoto que causa grande dano ao inimigo na área."),
+        Magias("Estalaquitites", "Terra", 30, 20, "Dispara estalactites do chão que causam dano ao inimigo."),
+    ],
+
+    "magias_ar": [
+        Magias("Rajada de Vento", "Ar", 20, 10, "Dispara uma rajada de vento que causa dano ao inimigo."),
+        Magias("Tornado", "Ar", 40, 30, "Cria um tornado que causa grande dano ao inimigo na área."),
+        Magias("Furacão", "Ar", 30, 20, "Cria um furacão que causa dano ao inimigo."),
+    ],
+
+    "magia_gelo": [
+        Magias("Lança de Gelo", "Gelo", 20, 10, "Dispara uma lança de gelo que causa dano ao inimigo."),
+        Magias("Tempestade de Neve", "Gelo", 40, 30, "Cria uma tempestade de neve que causa grande dano ao inimigo na área."),
+        Magias("Congelamento", "Gelo", 30, 20, "Congela o inimigo, causando danopor frio."),
+    ],
+
+    "magias_luz": [
+        Magias("Raio de Luz", "Luz", 20, 10, "Dispara um raio de luz que causa dano ao inimigo."),
+        Magias("Explosão de Luz", "Luz", 40, 30, "Cria uma explosão de luz que causa grande dano ao inimigo na área."),
+        Magias("Prisma brilhante", "Luz", 30, 20, "Cria um prisma de luz que causa dano ao inimigo."),
+    ], 
+
+    "magias_trevas": [
+        Magias("Sombra Cortante", "Trevas", 20, 10, "Dispara uma lâmina de sombra que causa dano ao inimigo."),
+        Magias("Explosão Sombria", "Trevas", 40, 30, "Cria uma explosão de trevas que causa grande dano ao inimigo na área."),
+        Magias("Manto das Trevas", "Trevas", 30, 20, "Cobre o inimigo com trevas, causando dano."),
+    ],
+
+    "magias_raio": [
+        Magias("Raio Elétrico", "Raio", 20, 10, "Dispara um raio elétrico que causa dano ao inimigo."),
+        Magias("Tempestade Elétrica", "Raio", 40, 30, "Cria uma tempestade elétrica que causa grande dano ao inimigo na área."),
+        Magias("Descarrego", "Raio", 30, 20, "Descarrega eletricidade no inimigo, causando dano."),
+    ],
+
+    "magias_natureza": [
+        Magias("Espinhos Crescentes", "Natureza", 20, 10, "Faz crescer espinhos que causam dano ao inimigo."),
+        Magias("Raízes Enredantes", "Natureza", 40, 30, "Faz crescer raízes que prendem e causam dano ao inimigo."),
+        Magias("Belas flores", "Natureza", 30, 20, "Cria flores emissoras que de um = pólen que causa dano ao inimigo."),
+    ],
+
+    "magias_veneno": [
+        Magias("Dardo Venenoso", "Veneno", 20, 10, "Dispara um dardo envenenado que causa dano ao inimigo."),
+        Magias("Nuvem Tóxica", "Veneno", 40, 30, "Cria uma nuvem de veneno que causa grande dano ao inimigo na área."),
+        Magias("Substância Corrosiva", "Veneno", 30, 20, "Aplica uma substância corrosiva no inimigo, causando dano."),
+    ]
+}
+
 def aplicar_exp():
     Personagem.exp += Monstro.exp
 
@@ -319,11 +405,404 @@ def aplicar_pontos(pnts):
             print("Opção inválida. Por favor, responda com 's' ou 'n'.")
             continue
 
+def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, defesa_adicional, defesa_personagem, defesa_monstro, elemento_jogador, elemento_monstro, elemento_sala):
+
+    multiplicador_monstro = 1
+    multiplicador_jogador = 1
+    multiplicador_monstro_sala = 1
+    multiplicador_jogador_sala = 1
+
+    if elemento_jogador == elemento_monstro:
+        multiplicador_monstro = 1
+        multiplicador_jogador = 1
+
+    if elemento_sala == elemento_jogador:
+        multiplicador_jogador_sala = 1
+    
+    if elemento_sala == elemento_monstro:
+        multiplicador_monstro_sala = 1
+    
+    
+    if elemento_jogador != elemento_monstro:
+        
+        if elemento_jogador == "Fogo":
+
+            if elemento_monstro in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Veneno", "Gelo", "Trevas"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+            
+        elif elemento_jogador == "Água":
+
+            if elemento_monstro in ["Ar", "Terra", "Natureza"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Fogo", "Luz", "Trevas"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Ar":
+            
+            if elemento_monstro in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Fogo", "Água", "Luz"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Terra":
+            
+            if elemento_monstro in ["Veneno", "Gelo", "Raio"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Água", "Fogo", "Ar"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Natureza":
+            
+            if elemento_monstro in ["Gelo", "Raio", "Veneno"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Veneno":
+            
+            if elemento_monstro in ["Raio", "Gelo", "Luz"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Terra", "Fogo", "Ar"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Gelo":
+            
+            if elemento_monstro in ["Luz", "Raio", "Trevas"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+        
+        elif elemento_jogador == "Raio":
+            
+            if elemento_monstro in ["Luz", "Água", "Trevas"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Fogo", "Gelo", "Natureza"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+        
+        elif elemento_jogador == "Luz":
+            
+            if elemento_monstro in ["Trevas", "Fogo", "Ar"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Água", "Veneno", "Gelo"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Trevas":
+            
+            if elemento_monstro in ["Fogo", "Água", "Natureza"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Gelo", "Raio", "Luz"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+    
+    if elemento_jogador != elemento_sala:
+
+        if elemento_jogador == "Fogo":
+
+            if elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Veneno", "Gelo", "Trevas"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+            
+        elif elemento_jogador == "Água":
+
+            if elemento_sala in ["Ar", "Terra", "Natureza"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Fogo", "Luz", "Trevas"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Ar":
+            
+            if elemento_sala in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Fogo", "Água", "Luz"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Terra":
+            
+            if elemento_sala in ["Veneno", "Gelo", "Raio"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Água", "Fogo", "Ar"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Natureza":
+            
+            if elemento_sala in ["Gelo", "Raio", "Veneno"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Veneno":
+            
+            if elemento_sala in ["Raio", "Gelo", "Luz"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala  in ["Terra", "Fogo", "Ar"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Gelo":
+            
+            if elemento_sala in ["Luz", "Raio", "Trevas"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala  in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Raio":
+            
+            if elemento_sala in ["Luz", "Água", "Trevas"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Fogo", "Gelo", "Natureza"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+        
+        elif elemento_jogador == "Luz":
+            
+            if elemento_sala in ["Trevas", "Fogo", "Ar"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Água", "Veneno", "Gelo"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+        elif elemento_jogador == "Trevas":
+            
+            if elemento_sala in ["Fogo", "Água", "Natureza"]:
+                multiplicador_jogador_sala = 1.5
+
+            elif elemento_sala in ["Gelo", "Raio", "Luz"]:
+                multiplicador_jogador_sala = 0.5
+
+            else:
+                multiplicador_jogador_sala = 1
+
+
+    if elemento_monstro != elemento_sala:
+
+        if elemento_monstro == "Fogo":
+
+            if elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Veneno", "Gelo", "Trevas"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+            
+        elif elemento_monstro == "Água":
+
+            if elemento_sala in ["Ar", "Terra", "Natureza"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Fogo", "Luz", "Trevas"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Ar":
+            
+            if elemento_sala in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Fogo", "Água", "Luz"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Terra":
+            
+            if elemento_sala in ["Veneno", "Gelo", "Raio"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Água", "Fogo", "Ar"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Natureza":
+            
+            if elemento_sala in ["Gelo", "Raio", "Veneno"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Veneno":
+            
+            if elemento_sala in ["Raio", "Gelo", "Luz"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala  in ["Terra", "Fogo", "Ar"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Gelo":
+            
+            if elemento_sala in ["Luz", "Raio", "Trevas"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala  in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Raio":
+            
+            if elemento_sala in ["Luz", "Água", "Trevas"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Fogo", "Gelo", "Natureza"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+        
+        elif elemento_monstro == "Luz":
+            
+            if elemento_sala in ["Trevas", "Fogo", "Ar"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Água", "Veneno", "Gelo"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+        elif elemento_monstro == "Trevas":
+            
+            if elemento_sala in ["Fogo", "Água", "Natureza"]:
+                multiplicador_monstro_sala = 1.5
+
+            elif elemento_sala in ["Gelo", "Raio", "Luz"]:
+                multiplicador_monstro_sala = 0.5
+
+            else:
+                multiplicador_monstro_sala = 1
+
+    dano_total_jogador = ((dano_personagem + dano_adicional_personagem) * multiplicador_jogador * multiplicador_jogador_sala)
+    dano_final_jogador = int(dano_final_jogador - (dano_total_jogador * defesa_monstro / 100))
+
+    dano_total_monstro = (dano_monstro * multiplicador_monstro * multiplicador_monstro_sala)
+    dano_final_monstro = int(dano_total_monstro - (dano_total_monstro * (defesa_personagem + defesa_adicional) / 100))
+
+    return [dano_final_jogador, dano_final_monstro]
 
 while True:
 
     print("RPG elementian\n")
-    print("Crie seu personagem\n")
+    print("Crie seu personagem\n") 
     personagem = Personagem.gerar_personagem()
 
     if personagem.classe == "Guerreiro":
@@ -377,45 +856,80 @@ while True:
                     escolha_turno = int(input("Escolha sua ação: "))
 
                     if escolha_turno == 1:
-                        dano_jogador = personagem.ataque + personagem.buff_forca
 
-                        for objeto in equipado:
-                            if objeto.tipo_arma:
-                                dano_jogador += objeto.dano
-                                break
+                        if personagem.classe == "Mago":
+                            ataque_mago = input("Deseja usar magia? (s/n) ").lower()
 
-                        dano_final = int(dano_jogador - (dano_jogador * monstro.defesa / 100))
+                            if ataque_mago == "s":
+                                print("\nMagias disponiveis:")
+                                for i, magia in enumerate(magias[f"magias_{personagem.elemento.lower()}"], start=1):
+                                    print(f"{i} - {magia.nome} | Dano: {magia.dano} | Custo de Mana: {magia.custo_mana}")
+                                    print(f"Descrição: {magia.descricao}\n")
 
-                        monstro.vida -= dano_final
+                                try:
+                                    escolha_magia = int(input("Escolha uma magia para usar: ")) - 1
+                                    magia_escolhida = magias[f"magias_{personagem.elemento.lower()}"][escolha_magia]
 
-                        print(f"Você atacou o {monstro.tipo} causando {dano_final} de dano!")
+                                    if personagem.mana >= magia_escolhida.custo_mana:
+                                        personagem.mana -= magia_escolhida.custo_mana
+                                        for objeto in equipado:
+                                            if objeto.tipo_armadura:
+                                                defesa_adicional = objeto.defesa
+                                                break     
+                                        dano_calculado  = calcular_dano(magia_escolhida.dano, personagem.ataque + personagem.buff_forca, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
+                                        monstro.vida -= dano_calculado[0]
+
+
+                                    else:
+                                        print("Mana insuficiente para usar essa magia.")
+                                        continue
+
+                                except (ValueError, IndexError):
+                                    print("Opção inválida. Por favor, escolha uma magia válida.")
+                                    continue
+                            
+                            elif ataque_mago == "n":
+
+                                for objeto in equipado:
+                                    if objeto.tipo_armadura:
+                                        defesa_adicional = objeto.defesa
+                                        break 
+
+                                dano_calculado  = calcular_dano(objeto.dano, personagem.ataque + personagem.buff_forca, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
+                                monstro.vida -= dano_calculado[0]
+                            
+                            else: 
+                                print("Opção invalida, digite apeans s ou n")
+                                continue
+
+                        else:
+                            for objeto in equipado:
+                                if objeto.tipo_armadura:
+                                    defesa_adicional = objeto.defesa
+                                    break 
+
+                            dano_calculado  = calcular_dano(objeto.dano, personagem.ataque + personagem.buff_forca, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
+                            monstro.vida -= dano_calculado[0]
+                        
+                        print(f"Você atacou o {monstro.tipo} causando {dano_calculado[0]} de dano!")
                         time.sleep(1)
-                        defesa_jogador = personagem.defesa + personagem.buff_defesa
-
-                        for objeto in equipado:
-                            if objeto.tipo_armadura:
-                                defesa_jogador += objeto.defesa
-                                break
-
-                        dano_monstro = monstro.ataque
-                        dano_final = int(dano_monstro - (dano_monstro * defesa_jogador / 100))
-
-                        personagem.vida -= dano_final
-
-                        print(f"O {monstro.tipo} atacou causando {dano_final} de dano!")
+                
+                        personagem.vida -= dano_calculado[1]
+                    
+                        print(f"O {monstro.tipo} atacou causando {dano_calculado[1]} de dano!")
                         time.sleep(1)
-
+                    
                         if personagem.turnos_buff_forca > 0:
                             personagem.turnos_buff_forca -= 1
-
+                    
                             if personagem.turnos_buff_forca == 0:
                                 personagem.buff_forca = 0
                                 print("\nO efeito da Poção de Força acabou.\n")
                                 time.sleep(1)
-
+                    
                         if personagem.turnos_buff_defesa > 0:
                             personagem.turnos_buff_defesa -= 1
-
+                    
                             if personagem.turnos_buff_defesa == 0:
                                 personagem.buff_defesa = 0
                                 print("\nO efeito da Poção de Defesa acabou.\n")

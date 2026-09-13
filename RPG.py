@@ -13,24 +13,25 @@ equipado = []
 tamanho_recompensa = ["Pequeno", "Médio", "Grande"]
 quantidade = None
 
-min_exp = 50
-
 arma = ["Espada", "Arco", "Cajado", "Adaga", "Machado"]
 pocoes = ["Poção de vida", "Poção de mana", "Poção de força", "Poção de defesa"]
 armaduras = ["Armadura de Couro", "Armadura de Ferro", "Armadura de Aço", "Armadura de platina"]
 
 class Personagem:
         
-        def __init__(self, nome, classe, elemento, vida, ataque, defesa, mana, exp, level, pontos, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa):
+        def __init__(self, nome, classe, elemento, vida, vida_max, ataque, defesa, mana, mana_max, exp, level, min_exp, pontos, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa):
             self.nome = nome
             self.classe = classe
             self.elemento = elemento
             self.vida = vida
+            self.vida_max = vida_max
             self.ataque = ataque
             self.defesa = defesa
             self.mana = mana
+            self.mana_max = mana_max
             self.exp = exp
             self.level = level
+            self.min_exp = min_exp
             self.pontos = pontos
 
             self.buff_forca = buff_forca
@@ -51,11 +52,14 @@ class Personagem:
             print("3. Arqueiro: 90 de vida, 18 de ataque, 12 de defesa, 75 de mana \n")
             time.sleep(0.5)
 
-            try:
-                classe = input("Escolha a classe do seu personagem (1/2/3): ")
+            while True:
+                try:
+                    classe = int(input("Escolha a classe do seu personagem (1/2/3): "))    
+                    break 
 
-            except ValueError:
-                print("Valor invalido. Digite apenas números")
+                except ValueError:
+                    print("Valor invalido. Digite apenas números")
+                    continue
 
             print("\n escolha seu elemento:")
             time.sleep(0.5)
@@ -79,56 +83,64 @@ class Personagem:
             time.sleep(0.5)
             print("10. Veneno\n")
 
-            try:
-                elemento = input("Escolha o elemento do seu personagem (1/2/3/4/5/6/7/8/9/10): ")
+            while True:
+                try:
+                    elemento = int(input("Escolha o elemento do seu personagem (1/2/3/4/5/6/7/8/9/10): "))
 
-                if elemento == "1":
-                    elemento = "Fogo"  
+                    if elemento == 1:
+                        elemento = "Fogo"  
 
-                elif elemento == "2":
-                    elemento = "Água"
+                    elif elemento == 2:
+                        elemento = "Água"
 
-                elif elemento == "3":
-                    elemento = "Terra"
+                    elif elemento == 3:
+                        elemento = "Terra"
 
-                elif elemento == "4":
-                    elemento = "Ar"
+                    elif elemento == 4:
+                        elemento = "Ar"
 
-                elif elemento == "5":   
-                    elemento = "Gelo"
+                    elif elemento == 5:   
+                        elemento = "Gelo"
 
-                elif elemento == "6":   
-                    elemento = "Luz"
+                    elif elemento == 6:   
+                        elemento = "Luz"
 
-                elif elemento == "7":
-                    elemento = "Trevas"
+                    elif elemento == 7:
+                        elemento = "Trevas"
 
-                elif elemento == "8":
-                    elemento = "Raio"
+                    elif elemento == 8:
+                        elemento = "Raio"
 
-                elif elemento == "9":
-                    elemento = "Natureza"
+                    elif elemento == 9:
+                        elemento = "Natureza"
 
-                elif elemento == "10":
-                    elemento = "Veneno"
+                    elif elemento == 10:
+                        elemento = "Veneno"
+                    
+                    else:
+                        print("Escolha inválida. Por favor, escolha um número entre 1 e 10.")
+                        continue
 
-            except ValueError:
-                print("Valor invalido. Digite apenas números")
+                    break
+
+                except ValueError:
+                    print("Valor invalido. Digite apenas números")
+                    continue
 
 
-            if classe == "1":
-                return Personagem(nome, "Guerreiro", elemento, 100, 20, 15, 50, 0, 1, 0, 0, 0, 0, 0)
+            if classe == 1:
+                return Personagem(nome, "Guerreiro", elemento, 100, 100, 20, 15, 50, 50, 0, 1, 0, 0, 0, 0, 0)
             
-            elif classe == "2":
-                return Personagem(nome, "Mago", elemento, 80, 25, 10, 100, 0, 1, 0, 0, 0, 0, 0)
+            elif classe == 2:
+                return Personagem(nome, "Mago", elemento, 80, 80, 25, 10, 100, 100, 0, 1, 0, 0, 0, 0, 0)
             
-            elif classe == "3":
-                return Personagem(nome, "Arqueiro", elemento, 90, 18, 12, 75, 0, 1, 0, 0, 0, 0, 0)
+            elif classe == 3:
+                return Personagem(nome, "Arqueiro", elemento, 90, 90, 18, 12, 75, 75, 0, 1, 0, 0, 0, 0, 0)
             
             else:
                 print("Classe inválida.")
-                return None                     
-
+                return None    
+            
 
 class Salas:
     def __init__(self, estrutura, elementos, inimigo, recompensa):
@@ -194,7 +206,7 @@ class Salas:
 
 
         if sala_nova.recompensa:
-            print("Você encontrou uma recompensa!\n")
+            print("há recompensas nesta sala.\n")
             time.sleep(1)
 
         else:
@@ -224,8 +236,8 @@ class Recompensas:
         tamanho_escolhido = random.choice(tamanho_recompensa)
 
         print(f"Você encontrou uma recompensa de tamanho {tamanho_escolhido}.\n")
-        return tamanho_escolhido
         time.sleep(1)
+        return tamanho_escolhido
 
 
 class Item:
@@ -246,18 +258,20 @@ class Item:
 
         elif self.tipo_pocao:
             return f"{self.tipo_pocao} (Efeito: {self.efeito})"
+
     
     def gerar_arma():
         return Item(random.choice(arma), None, None, random.randint(5, 20), None, None)
+
     
     def gerar_armadura():
         return Item(None, random.choice(armaduras), None, None, random.randint(5, 20), None)
+
     
     def gerar_pocao():
         return Item(None, None, random.choice(pocoes), None, None, random.randint(5, 20))
 
-        
-    
+
     def narrar_item():
         item_gerado = random.choice([Item.gerar_arma(), Item.gerar_armadura(), Item.gerar_pocao()])
 
@@ -269,10 +283,10 @@ class Item:
         
         elif item_gerado.tipo_pocao:
             print(f"Você encontrou uma poção: {item_gerado.tipo_pocao} com efeito de {item_gerado.efeito}.")
-        
-        return item_gerado
-        time.sleep(1)
 
+        time.sleep(1)
+        return item_gerado
+        
 
 class Magias:
     
@@ -346,20 +360,15 @@ magias = {
     ]
 }
 
+
 def aplicar_exp():
-    Personagem.exp += Monstro.exp
+    personagem.exp += monstro.exp
 
-    if Personagem.exp == min_exp:
-        Personagem.level += 1
-        Personagem.exp = 0
-        Personagem.pontos += 5
-        min_exp += 50
-
-    elif Personagem.exp > min_exp:
-        Personagem.level += 1
-        Personagem.exp -= min_exp
-        Personagem.pontos += 5
-        min_exp += 500
+    while personagem.exp >= personagem.min_exp:
+        personagem.level += 1
+        personagem.exp -= personagem.min_exp
+        personagem.pontos += 5
+        personagem.min_exp += 50
     
 def aplicar_pontos(pnts):
     while pnts > 0:
@@ -377,23 +386,27 @@ def aplicar_pontos(pnts):
             return
 
         if melhoria == 1:
-            Personagem.vida += 10
+            personagem.vida_max += 10
 
         elif melhoria == 2:
-            Personagem.ataque += 5
+            personagem.ataque += 5
 
         elif melhoria == 3:
-            Personagem.defesa += 5
+            personagem.defesa += 5
 
         elif melhoria == 4:
-            Personagem.mana += 10
+            personagem.mana_max += 10
 
         else:
             print("Opção inválida.")
             continue
         
-        pnts -= 1
-        continuar = input("Deseja continuar distribuindo pontos? (s/n) ").lower()
+        try:
+            continuar = input("Deseja continuar distribuindo pontos? (s/n) ").lower()
+
+        except ValueError:
+            print("Opção inválida. Por favor, responda com 's' ou 'n'.")
+            continue
 
         if continuar == "s":
             continue
@@ -404,6 +417,8 @@ def aplicar_pontos(pnts):
         else:
             print("Opção inválida. Por favor, responda com 's' ou 'n'.")
             continue
+
+        pnts -= 1
 
 def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, defesa_adicional, defesa_personagem, defesa_monstro, elemento_jogador, elemento_monstro, elemento_sala):
 
@@ -455,7 +470,7 @@ def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, def
 
         elif elemento_jogador == "Ar":
             
-            if elemento_monstro in ["Fogo", "Veneno", "Natureza"]:
+            if elemento_monstro in ["Terra", "Veneno", "Natureza"]:
                 multiplicador_monstro = 0.5
                 multiplicador_jogador = 1.5
 
@@ -592,7 +607,7 @@ def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, def
 
         elif elemento_jogador == "Ar":
             
-            if elemento_sala in ["Fogo", "Veneno", "Natureza"]:
+            if elemento_sala in ["Terra", "Veneno", "Natureza"]:
                 multiplicador_jogador_sala = 1.5
 
             elif elemento_sala in ["Fogo", "Água", "Luz"]:
@@ -705,7 +720,7 @@ def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, def
 
         elif elemento_monstro == "Ar":
             
-            if elemento_sala in ["Fogo", "Veneno", "Natureza"]:
+            if elemento_sala in ["Terra", "Veneno", "Natureza"]:
                 multiplicador_monstro_sala = 1.5
 
             elif elemento_sala in ["Fogo", "Água", "Luz"]:
@@ -792,7 +807,7 @@ def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, def
                 multiplicador_monstro_sala = 1
 
     dano_total_jogador = ((dano_personagem + dano_adicional_personagem) * multiplicador_jogador * multiplicador_jogador_sala)
-    dano_final_jogador = int(dano_final_jogador - (dano_total_jogador * defesa_monstro / 100))
+    dano_final_jogador = int(dano_total_jogador - (dano_total_jogador * defesa_monstro / 100))
 
     dano_total_monstro = (dano_monstro * multiplicador_monstro * multiplicador_monstro_sala)
     dano_final_monstro = int(dano_total_monstro - (dano_total_monstro * (defesa_personagem + defesa_adicional) / 100))
@@ -875,8 +890,11 @@ while True:
                                         for objeto in equipado:
                                             if objeto.tipo_armadura:
                                                 defesa_adicional = objeto.defesa
+
+                                            else:
+                                                defesa_adicional = 0
                                                 break     
-                                        dano_calculado  = calcular_dano(magia_escolhida.dano, personagem.ataque + personagem.buff_forca, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
+                                        dano_calculado  = calcular_dano(personagem.buff_forca, personagem.ataque + magia_escolhida.dano, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
                                         monstro.vida -= dano_calculado[0]
 
 
@@ -891,11 +909,11 @@ while True:
                             elif ataque_mago == "n":
 
                                 for objeto in equipado:
-                                    if objeto.tipo_armadura:
-                                        defesa_adicional = objeto.defesa
+                                    if objeto.tipo_arma:
+                                        dano_arma = objeto.dano
                                         break 
 
-                                dano_calculado  = calcular_dano(objeto.dano, personagem.ataque + personagem.buff_forca, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
+                                dano_calculado  = calcular_dano(personagem.buff_forca, personagem.ataque + dano_arma, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                     
                                 monstro.vida -= dano_calculado[0]
                             
                             else: 
@@ -1011,10 +1029,36 @@ while True:
 
                                     if escolha_pocao == "s":
                                         if item.tipo_pocao == "Poção de vida":
-                                            personagem.vida += item.efeito
+                                            if personagem.vida == personagem.vida_max:
+                                                print("Você já possui vida máxima, não é possivel consumir essa poção")
+                                                continue
+                                            elif personagem.vida > personagem.vida_max:
+                                                personagem.vida += item.efeito
+
+                                                if personagem.vida > personagem.vida_max:
+                                                    personagem.vida = personagem.vida_max
+                                                    print("Você possui vida máxima")
+                                                    continue
+                                                
+                                                else:
+                                                    print(f"Você recuperou {item.efeito} de vida")
+                                                    continue
 
                                         elif item.tipo_pocao == "Poção de mana":
-                                            personagem.mana += item.efeito
+                                            if personagem.mana == personagem.mana_max:
+                                                print("Você já possui vida máxima, não é possivel consumir essa poção")
+                                                continue
+                                            elif personagem.mana > personagem.mana_max:
+                                                personagem.vida += item.efeito
+
+                                                if personagem.mana > personagem.mana_max:
+                                                    personagem.mana = personagem.mana_max
+                                                    print("Você possui mana máxima")
+                                                    continue
+                                                
+                                                else:
+                                                    print(f"Você recuperou {item.efeito} de mana")
+                                                    continue
 
                                         elif item.tipo_pocao == "Poção de força":
                                             personagem.buff_forca = item.efeito
@@ -1023,6 +1067,8 @@ while True:
                                         elif item.tipo_pocao == "Poção de defesa":
                                             personagem.buff_defesa = item.efeito
                                             personagem.turnos_buff_defesa = 3
+
+                                        inventario.remove(item)
 
                                     else:
                                         print("Você não pode consumir itens comuns, apenas poções")
@@ -1056,7 +1102,7 @@ while True:
 
                     elif escolha_turno == 3:
                         print(personagem.nome)
-                        print(f"lvl: {personagem.level} | exp: {personagem.exp}/{min_exp}")
+                        print(f"lvl: {personagem.level} | exp: {personagem.exp}/{personagem.min_exp}")
                         print(f"Classe: {personagem.classe}")
                         print(f"Vida: {personagem.vida}")
                         print(f"Mana: {personagem.mana}")
@@ -1074,41 +1120,41 @@ while True:
                 except ValueError:
                     print("opção invalida, use apenas números")
 
-        if personagem.vida <= 0:
-            print("Você morreu! Fim de jogo.")
+            if personagem.vida <= 0:
+                print("Você morreu! Fim de jogo.")
 
-            recomecar = input("Deseja recomeçar o jogo? (s/n) ").lower()
+                recomecar = input("Deseja recomeçar o jogo? (s/n) ").lower()
 
-            if recomecar == "s":
-                continue
-            else:
-                break
-    
+                if recomecar == "s":
+                    continue
+                else:
+                    break
+        
 
-        if monstro.vida <= 0:
-            print(f"Você derrotou o {monstro.tipo} e recebeu {monstro.exp} de experiência")
-            aplicar_exp()
-            aplicar_pontos(personagem.pontos)
+            if monstro.vida <= 0:
+                print(f"Você derrotou o {monstro.tipo} e recebeu {monstro.exp} de experiência")
+                aplicar_exp()
+                aplicar_pontos(personagem.pontos)
 
-            if sala_nova.recompensa:
-                input("Pressione ENTER para ver a recompensa...")
-                tamanho = Recompensas.narrar_recompensa()
+                if sala_nova.recompensa:
+                    input("Pressione ENTER para ver a recompensa...")
+                    tamanho = Recompensas.narrar_recompensa()
 
-                if tamanho == "Pequeno":
-                    quantidade = 1
+                    if tamanho == "Pequeno":
+                        quantidade = 1
 
-                elif tamanho == "Médio":
-                    quantidade = 2
+                    elif tamanho == "Médio":
+                        quantidade = 2
 
-                elif tamanho == "Grande":
-                    quantidade = 3
+                    elif tamanho == "Grande":
+                        quantidade = 3
 
-                input("Pressione ENTER para coletar recompensa...")
-                for i in range(quantidade):
-                    item = Item.narrar_item()
-                    inventario.append(item)
+                    input("Pressione ENTER para coletar recompensa...")
+                    for i in range(quantidade):
+                        item = Item.narrar_item()
+                        inventario.append(item)
 
-            else:
-                pass
+                else:
+                    pass
             
-            escolha_sala = input("Deseja entrar na proxima sala? (s/n)").lower()
+        escolha_sala = input("Deseja entrar na proxima sala? (s/n)").lower()

@@ -13,12 +13,14 @@ equipado = []
 tamanho_recompensa = ["Pequeno", "Médio", "Grande"]
 quantidade = None
 
+min_exp = 50
+
 arma = ["Espada", "Arco", "Cajado", "Adaga", "Machado"]
 pocoes = ["Poção de vida", "Poção de mana", "Poção de força", "Poção de defesa"]
 armaduras = ["Armadura de Couro", "Armadura de Ferro", "Armadura de Aço", "Armadura de platina"]
 
 class Personagem:
-        def __init__(self, nome, classe, elemento, vida, ataque, defesa, mana, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa):
+        def __init__(self, nome, classe, elemento, vida, ataque, defesa, mana, exp, level, pontos, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa):
             self.nome = nome
             self.classe = classe
             self.elemento = elemento
@@ -26,6 +28,9 @@ class Personagem:
             self.ataque = ataque
             self.defesa = defesa
             self.mana = mana
+            self.exp = exp
+            self.level = level
+            self.pontos = pontos
 
             self.buff_forca = buff_forca
             self.buff_defesa = buff_defesa
@@ -102,17 +107,18 @@ class Personagem:
 
 
             if classe == "1":
-                return Personagem(nome, "Guerreiro", elemento, 100, 20, 15, 50, 0, 0, 0, 0)
+                return Personagem(nome, "Guerreiro", elemento, 100, 20, 15, 50, 0, 1, 0, 0, 0, 0, 0)
             
             elif classe == "2":
-                return Personagem(nome, "Mago", elemento, 80, 25, 10, 100, 0, 0, 0, 0)
+                return Personagem(nome, "Mago", elemento, 80, 25, 10, 100, 0, 1, 0, 0, 0, 0, 0)
             
             elif classe == "3":
-                return Personagem(nome, "Arqueiro", elemento, 90, 18, 12, 75, 0, 0, 0, 0)
+                return Personagem(nome, "Arqueiro", elemento, 90, 18, 12, 75, 0, 1, 0, 0, 0, 0, 0)
             
             else:
                 print("Classe inválida.")
                 return None
+
             
 
 class Salas:
@@ -184,15 +190,16 @@ class Salas:
 
 
 class Monstro:
-    def __init__(self, tipo, elemento, ataque, defesa, vida):
+    def __init__(self, tipo, elemento, ataque, defesa, vida, exp):
         self.tipo = tipo
         self.elemento = elemento
         self.ataque = ataque
         self.defesa = defesa
         self.vida = vida
+        self.exp = exp
 
     def gerar_monstro():
-        return Monstro(random.choice(monstros), random.choice(elementos), random.randint(10, 30), random.randint(5, 20), random.randint(50, 150))
+        return Monstro(random.choice(monstros), random.choice(elementos), random.randint(10, 30), random.randint(5, 20), random.randint(50, 150), random.randint(10, 50))
 
 
 class Recompensas:
@@ -253,6 +260,66 @@ class Item:
         return item_gerado
         time.sleep(1)
 
+def aplicar_exp():
+    Personagem.exp += Monstro.exp
+
+    if Personagem.exp == min_exp:
+        Personagem.level += 1
+        Personagem.exp = 0
+        Personagem.pontos += 5
+        min_exp += 50
+
+    elif Personagem.exp > min_exp:
+        Personagem.level += 1
+        Personagem.exp -= min_exp
+        Personagem.pontos += 5
+        min_exp += 500
+    
+def aplicar_pontos(pnts):
+    while pnts > 0:
+        print(f"\nVocê possui {pnts} pontos para distribuir entre seus atributos:")
+        print("1 - Vida")
+        print("2 - Ataque")
+        print("3 - Defesa")
+        print("4 - Mana")
+
+        try:
+            melhoria = int(input("Qual dos atributos deseja melhorar? "))
+
+        except ValueError:
+            print("Opção inválida. Por favor, escolha um número entre 1 e 4.")
+            return
+
+        if melhoria == 1:
+            Personagem.vida += 10
+
+        elif melhoria == 2:
+            Personagem.ataque += 5
+
+        elif melhoria == 3:
+            Personagem.defesa += 5
+
+        elif melhoria == 4:
+            Personagem.mana += 10
+
+        else:
+            print("Opção inválida.")
+            continue
+        
+        pnts -= 1
+        continuar = input("Deseja continuar distribuindo pontos? (s/n) ").lower()
+
+        if continuar == "s":
+            continue
+
+        elif continuar == "n":
+            break
+
+        else:
+            print("Opção inválida. Por favor, responda com 's' ou 'n'.")
+            continue
+
+
 while True:
 
     print("RPG elementian\n")
@@ -274,15 +341,15 @@ while True:
     time.sleep(1)
     print("Um dia, saindo para explorar, encontra uma masmorra misteriosa, nela você sente diferentes energias elementais")
     time.sleep(1)
-    escolha_sala = input("Deseja entrar na masmorra? (S/N) ").upper()
+    escolha_sala = input("Deseja entrar na masmorra? (s/n) ").lower()
 
     while True:
 
-        if escolha_sala == "S":
+        if escolha_sala == "s":
             sala_nova = Salas.gerar_sala()
             Salas.narrar()
 
-        elif escolha_sala == "N":
+        elif escolha_sala == "n":
             print("Você decide apenas ficar na sala até morrer de causas naturais.")
             break
         
@@ -356,6 +423,7 @@ while True:
 
                     elif escolha_turno == 2: 
                         print("\nInventario:")
+
                         for i in range(len(inventario)):
                             print(f"{i+1} - {inventario[i]}")
                             time.sleep(0.5)
@@ -425,9 +493,9 @@ while True:
                                 item = inventario[item_consumir]
 
                                 if item.tipo_pocao:
-                                    escolha_pocao = input("\nDeseja consumir essa poção? (S/N) ").upper()
+                                    escolha_pocao = input("\nDeseja consumir essa poção? (s/n) ").lower()
 
-                                    if escolha_pocao == "S":
+                                    if escolha_pocao == "s":
                                         if item.tipo_pocao == "Poção de vida":
                                             personagem.vida += item.efeito
 
@@ -451,11 +519,11 @@ while True:
                                 item_apagar = int(input("Escolha um item para apagar: "))
                                 item_apagar -= 1
 
-                                confirmar_delet = input("Tem certeza que deseja apagar este item? (S/N) ").upper()
-                                if confirmar_delet == "S":
+                                confirmar_delet = input("Tem certeza que deseja apagar este item? (s/n) ").lower()
+                                if confirmar_delet == "s":
                                     inventario.remove(inventario[item_apagar])
 
-                                elif confirmar_delet == "N":
+                                elif confirmar_delet == "n":
                                     continue
 
                                 else:
@@ -474,6 +542,8 @@ while True:
 
                     elif escolha_turno == 3:
                         print(personagem.nome)
+                        print(f"lvl: {personagem.level} | exp: {personagem.exp}/{min_exp}")
+                        print(f"Classe: {personagem.classe}")
                         print(f"Vida: {personagem.vida}")
                         print(f"Mana: {personagem.mana}")
                         print(f"Ataque: {personagem.ataque}")
@@ -490,24 +560,41 @@ while True:
                 except ValueError:
                     print("opção invalida, use apenas números")
 
-        if sala_nova.recompensa:
-            input("Pressione ENTER para ver a recompensa...")
-            tamanho = Recompensas.narrar_recompensa()
+        if personagem.vida <= 0:
+            print("Você morreu! Fim de jogo.")
 
-            if tamanho == "Pequeno":
-                quantidade = 1
+            recomecar = input("Deseja recomeçar o jogo? (s/n) ").lower()
 
-            elif tamanho == "Médio":
-                quantidade = 2
+            if recomecar == "s":
+                continue
+            else:
+                break
+    
 
-            elif tamanho == "Grande":
-                quantidade = 3
+        if monstro.vida <= 0:
+            print(f"Você derrotou o {monstro.tipo} e recebeu {monstro.exp} de experiência")
+            aplicar_exp()
+            aplicar_pontos(personagem.pontos)
 
-            input("Pressione ENTER para coletar recompensa...")
-            for i in range(quantidade):
-                item = Item.narrar_item()
-                inventario.append(item)
+            if sala_nova.recompensa:
+                input("Pressione ENTER para ver a recompensa...")
+                tamanho = Recompensas.narrar_recompensa()
 
-        else:
-            pass
-        escolha_sala = input("Deseja entrar na proxima sala? (S/N)").upper()
+                if tamanho == "Pequeno":
+                    quantidade = 1
+
+                elif tamanho == "Médio":
+                    quantidade = 2
+
+                elif tamanho == "Grande":
+                    quantidade = 3
+
+                input("Pressione ENTER para coletar recompensa...")
+                for i in range(quantidade):
+                    item = Item.narrar_item()
+                    inventario.append(item)
+
+            else:
+                pass
+            
+            escolha_sala = input("Deseja entrar na proxima sala? (s/n)").lower()

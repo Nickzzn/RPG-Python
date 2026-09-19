@@ -1,6 +1,9 @@
 import time
 import random
 import os
+import sys
+import msvcrt
+
 
 sala = ["paredes comuns", "escadarias longas para baixo", "escadarias longas para cima", "espinhos pontudos"]
 elementos = ["Fogo", "Água", "Terra", "Ar", "Gelo", "Luz", "Trevas", "Raio", "Natureza", "Veneno"]
@@ -18,23 +21,54 @@ arma = ["Espada", "Arco", "Cajado", "Adaga", "Machado"]
 pocoes = ["Poção de vida", "Poção de mana", "Poção de força", "Poção de defesa"]
 armaduras = ["Armadura de Couro", "Armadura de Ferro", "Armadura de Aço", "Armadura de platina"]
 
-def texto_print(mensagem):
-    for letra in mensagem:
-        print(letra, end="", flush=True)
-        time.sleep(0.05)
-
-def texto_input(mensagem):
-    for letra in mensagem:
-        print(letra, end="", flush=True)
-        time.sleep(0.05)
-
-    return input()
-
 def quebrar_texto():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
+def limpar_buffer():
+    if os.name == "nt":
+        while msvcrt.kbhit():
+            msvcrt.getch()
+
+    else:
+        pass
+
+        
+def texto(mensagem_1, mensagem_2, pergunta):
+    try:
+        if mensagem_1 != None:
+            for palavra in mensagem_1:
+                for letra in palavra:
+                    print(letra, end="", flush=True)
+                    time.sleep(0.05)
+
+        else: 
+            pass
+
+        if mensagem_2 == None or mensagem_2 == False:
+            pass
+
+        elif mensagem_2 == True:
+            if pergunta:
+                for letra in mensagem_2:
+                    print(letra, end="", flush=True)
+                    time.sleep(0.05)
+
+                return input()
+
+            elif pergunta == False:
+                pass
+
+
+    except KeyboardInterrupt:
+
+        print("\r" + mensagem_1, end="", flush=True)
+        time.sleep(0.001)
+        print("\r" + mensagem_2, end="", flush=True)
+
+
 class Personagem:
-       
+
     def __init__(self, nome, classe, elemento, vida, vida_max, ataque, defesa, mana, mana_max, exp, level, min_exp, pontos, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa):
         self.nome = nome
         self.classe = classe
@@ -59,55 +93,39 @@ class Personagem:
 
     def gerar_personagem():
         
-        nome = texto_input("Digite o nome do seu personagem: ")
+        nome = texto(None, "Digite o nome do seu personagem: ", True)
         quebrar_texto()
         
         quebrar_texto()
-        texto_print(" lista de classes: \n \n")
-        time.sleep(0.5)
-        texto_print("1. Guerreiro: 100 de vida, 20 de ataque, 15 de defesa, 50 de mana\n")
-        time.sleep(0.5)
-        texto_print("2. Mago: 80 de vida, 25 de ataque, 10 de defesa, 100 de mana\n")
-        time.sleep(0.5)
-        texto_print("3. Arqueiro: 90 de vida, 18 de ataque, 12 de defesa, 75 de mana \n \n")
-        time.sleep(0.5)
+        texto_classes = [" lista de classes: \n \n",
+        "1. Guerreiro: 100 de vida, 20 de ataque, 15 de defesa e 0 de mana\n",
+        "2. Mago: 80 de vida, 25 de ataque, 10 de defesa e 100 de mana\n",
+        "3. Arqueiro: 90 de vida, 18 de ataque, 12 de defesa e 0 de mana \n \n"]
+
 
         while True:
             try:
-                classe = int(texto_input("Escolha a classe do seu personagem (1/2/3): "))    
+                valor = texto(texto_classes, "Escolha a classe do seu personagem (1/2/3): ", True)
+                classe = int(valor)    
                 break
             
             except ValueError:
-                texto_print("Valor invalido. Digite apenas números\n")
+                texto("Valor invalido. Digite apenas números\n", None, False)
                 continue
             
         quebrar_texto()
-        texto_print("\n escolha seu elemento:\n")
-        time.sleep(0.5)
-        texto_print("1. Fogo\n")
-        time.sleep(0.5)
-        texto_print("2. Água\n")
-        time.sleep(0.5)
-        texto_print("3. Terra\n")
-        time.sleep(0.5)
-        texto_print("4. Ar\n")
-        time.sleep(0.5)
-        texto_print("5. Gelo\n")
-        time.sleep(0.5)
-        texto_print("6. Luz\n")
-        time.sleep(0.5)
-        texto_print("7. Trevas\n")
-        time.sleep(0.5)
-        texto_print("8. Raio\n")
-        time.sleep(0.5)
-        texto_print("9. Natureza\n")
-        time.sleep(0.5)
-        texto_print("10. Veneno\n \n")
+
+        indice = 0
+        while indice < 9:
+            texto(f"{indice+1}. {elementos[indice]} \n", None, False)
+            indice += 1
+
+        print("\n")
 
         while True:
             try:
                 
-                elemento = int(texto_input("Escolha o elemento do seu personagem (1/2/3/4/5/6/7/8/9/10): "))
+                elemento = int(texto("Escolha o elemento do seu personagem (1/2/3/4/5/6/7/8/9/10): "))
 
                 if elemento == 1:
                     elemento = "Fogo"  
@@ -140,34 +158,35 @@ class Personagem:
                     elemento = "Veneno"
 
                 else:
-                    texto_print("Escolha inválida. Por favor, escolha um número entre 1 e 10.")
+                    texto("Escolha inválida. Por favor, escolha um número entre 1 e 10.\n", None, False)
                     continue
                 
                 break
             
             except ValueError:
-                texto_print("Valor invalido. Digite apenas números")
+                texto("Valor invalido. Digite apenas números\n", None, False)
                 continue
 
         if classe == 1:
-            return Personagem(nome, "Guerreiro", elemento, 100, 100, 20, 15, 0, 0, 0, 1, 50, 0, 0, 0, 0, 0)
+                            #nome,  classe, elemento, vida, vida_max, ataque, defesa, mana, mana_max, exp, level, min_exp, pontos, buff_forca, buff_defesa, turnos_buff_forca, turnos_buff_defesa
+            return Personagem(nome, "Guerreiro", elemento, 100, 100, 20, 15, 0, 0, 0, 1, 50, 0, 0, 0, 0)
         
         elif classe == 2:
-            return Personagem(nome, "Mago", elemento, 80, 80, 25, 10, 100, 100, 0, 1, 50, 0, 0, 0, 0, 0, 0)
+            return Personagem(nome, "Mago", elemento, 80, 80, 25, 10, 100, 100, 0, 1, 50, 0, 0, 0, 0, 0)
         
         elif classe == 3:
             return Personagem(nome, "Arqueiro", elemento, 90, 90, 20, 12, 0, 0, 0, 1, 50, 0, 0, 0, 0, 0)
         
         else:
-            print("Classe inválida.")
+            print("Classe inválida.\n")
             return None    
 
 
 class Salas:
-
-    def __init__(self, estrutura, elementos, inimigo, recompensa):
+    
+    def __init__(self, estrutura, elemento, inimigo, recompensa):
         self.estrutura = estrutura
-        self.elementos = elementos
+        self.elemento = elemento
         self.inimigo = inimigo
         self.recompensa = recompensa
 
@@ -176,64 +195,63 @@ class Salas:
     
     def narrar():
         quebrar_texto()
-        texto_print(f"\nVocê entrou em uma sala com {sala_nova.estrutura}.")
+        texto(f"\nVocê entrou em uma sala com {sala_nova.estrutura}.\n", None, False)
         time.sleep(1)
 
         if sala_nova.elementos == "Fogo":
-            texto_print("A sala está cheia de chamas ardentes. \n")
+            texto("A sala está cheia de chamas ardentes. \n", None, False)
             time.sleep(1)
 
         elif sala_nova.elementos == "Água":
-            texto_print("A sala está cheia de água.\n") 
+            texto("A sala está cheia de água.\n", None, False)
             time.sleep(1)
 
         elif sala_nova.elementos == "Terra":
-            texto_print("A sala está cheia de terra e pedras.")
+            texto("A sala está cheia de terra e pedras.\n", None, False)
             time.sleep(1)
 
-        elif sala_nova.elementos == "Ar":
-            texto_print("A sala está cheia de ventos fortes.")
+        elif sala_nova.elemento == "Ar":
+            texto("A sala está cheia de ventos fortes.\n", None, False)
             time.sleep(1)
 
-        elif sala_nova.elementos == "Gelo":
-            texto_print("A sala está preenchida por um frio congelante")
+        elif sala_nova.elemento == "Gelo":
+            texto("A sala está preenchida por um frio congelante.\n", None, False)
             time.sleep(1)
 
-        elif sala_nova.elementos == "Trevas":
-            texto_print("A sala está envolta em trevas.")
+        elif sala_nova.elemento == "Trevas":
+            texto("A sala está envolta em trevas.\n", None, False)
             time.sleep(1)
 
-        elif sala_nova.elementos == "Raio":
-            texto_print("A sala está cheia de eletricidade.")
+        elif sala_nova.elemento == "Raio":
+            texto("A sala está cheia de eletricidade.\n", None, False)
             time.sleep(1)
 
-        elif sala_nova.elementos == "Veneno":
-            texto_print("A sala está cheia de gases venenosos.")
+        elif sala_nova.elemento == "Veneno":
+            texto("A sala está cheia de gases venenosos.\n", None, False)
+            time.sleep(1)
+
+        elif sala_nova.elemento == "Luz":
+            texto("luzes intensas invadem a sala.\n", None, False)
+            time.sleep(1)
+
+        elif sala_nova.elemento == "Natureza":
+            texto("A sala está cheia de plantas e flores.\n", None, False)
             time.sleep(1) 
 
-        elif sala_nova.elementos == "Luz":
-            texto_print("luzes intensas invadem a sala.")
-            time.sleep(1)
-
-        elif sala_nova.elementos == "Natureza": 
-            texto_print("A sala está cheia de plantas e flores.")
-            time.sleep(1)
-
-
         if sala_nova.inimigo:
-            texto_print("Um inimigo aparece!")
+            texto("Um inimigo aparece!\n", None, False)
             time.sleep(1)
 
         else:
-            texto_print("Não há inimigos nesta sala.")
+            texto("Não há inimigos nesta sala.\n", None, False)
             time.sleep(1)
 
         if sala_nova.recompensa:
-            texto_print("há recompensas nesta sala.\n")
+            texto("há recompensas nesta sala.\n", None, False)
             time.sleep(1)
 
         else:
-            texto_print("Não há recompensas nesta sala.\n")
+            texto("Não há recompensas nesta sala.\n", None, False)
             time.sleep(1)
 
 
@@ -254,19 +272,19 @@ class Monstro:
 class Recompensas:
 
     def __init__(self, tamanho):
-           self.tamanho = tamanho
+            self.tamanho = tamanho
 
     def narrar_recompensa(tamanho):
         tamanho_escolhido = random.choice(tamanho)
         quebrar_texto()
-        texto_print(f"Você encontrou uma recompensa de tamanho {tamanho_escolhido}.\n")
+        texto(f"Você encontrou uma recompensa de tamanho {tamanho_escolhido}.\n", None, False)
         time.sleep(1)
 
         return tamanho_escolhido
 
 
-class Item: 
-    
+class Item:
+
     def __init__ (self, tipo_arma, tipo_armadura, tipo_pocao, dano, defesa, efeito):
         self.tipo_arma = tipo_arma
         self.tipo_armadura = tipo_armadura
@@ -281,7 +299,7 @@ class Item:
         
         elif self.tipo_armadura:
             return f"{self.tipo_armadura} (Defesa: {self.defesa})"
-    
+        
         elif self.tipo_pocao:
             return f"{self.tipo_pocao} (Efeito: {self.efeito})"
 
@@ -299,20 +317,20 @@ class Item:
 
         quebrar_texto()
         if item_gerado.tipo_arma:
-            texto_print(f"Você encontrou uma arma: {item_gerado.tipo_arma} com {item_gerado.dano} de dano.")
+            texto(f"Você encontrou uma arma: {item_gerado.tipo_arma} com {item_gerado.dano} de dano.", None, False)
 
         elif item_gerado.tipo_armadura:
-            texto_print(f"Você encontrou uma armadura: {item_gerado.tipo_armadura} com {item_gerado.defesa} de defesa.")
+            texto(f"Você encontrou uma armadura: {item_gerado.tipo_armadura} com {item_gerado.defesa} de defesa.", None, False)
 
         elif item_gerado.tipo_pocao:
-            texto_print(f"Você encontrou uma poção: {item_gerado.tipo_pocao} com efeito de {item_gerado.efeito}.")
+            texto(f"Você encontrou uma poção: {item_gerado.tipo_pocao} com efeito de {item_gerado.efeito}.", None, False)
 
         time.sleep(1)
         return item_gerado
 
 
 class Magias:
-   
+    
     def __init__(self, nome, elemento, dano, custo_mana, descricao):
         self.nome = nome
         self.elemento = elemento
@@ -332,7 +350,7 @@ magias = {
         Magias("Tsunami", "Água", 40, 30, "Cria uma grande onda que causa dano ao inimigo."),
         Magias("Chuva", "Água", 0, 30, "Cria uma chuva cortante que causa dano ao inimigo."),
     ],
-    "magias_terra": [
+    " magias_terra": [
         Magias("Cascalho Cortante", "Terra", 20, 10, "Dispara pequenas pedras afiadas que causam dano ao inimigo."),
         Magias("Terremoto", "Terra", 40, 30, "Causa um terremoto que causa grande dano ao inimigo na área."),
         Magias("Estalaquitites", "Terra", 30, 20, "Dispara estalactites do chão que causam dano ao inimigo."),
@@ -357,7 +375,7 @@ magias = {
         Magias("Explosão Sombria", "Trevas", 40, 30, "Cria uma explosão de trevas que causa grande dano ao inimigo na área."),
         Magias("Manto das Trevas", "Trevas", 30, 20, "Cobre o inimigo com trevas, causando dano."),
     ],
-    " magias_raio": [
+    "magias_raio": [
         Magias("Raio Elétrico", "Raio", 20, 10, "Dispara um raio elétrico que causa dano ao inimigo."),
         Magias("Tempestade Elétrica", "Raio", 40, 30, "Cria uma tempestade elétrica que causa grande dano ao inimigo na área."),
         Magias("Descarrego", "Raio", 30, 20, "Descarrega eletricidade no inimigo, causando dano."),
@@ -377,64 +395,66 @@ magias = {
 
 def aplicar_exp():
     personagem.exp += monstro.exp
-   
+    
     while personagem.exp >= personagem.min_exp:
         personagem.level += 1
         personagem.exp -= personagem.min_exp
         personagem.pontos += 5
         personagem.min_exp += 50
- 
+
 
 def aplicar_pontos(pnts):
-   
+    
     while pnts > 0:
         quebrar_texto()
-        texto_print(f"\nVocê possui {pnts} pontos para distribuir entre seus atributos:")
-        texto_print("1 - Vida")
-        texto_print("2 - Ataque")
-        texto_print("3 - Defesa")
-        texto_print("4 - Mana")
+        texto_menu_melhoria = [f"\nVocê possui {pnts} pontos para distribuir entre seus atributos:",
+        "1 - Vida",
+        "2 - Ataque",
+        "3 - Defesa",
+        "4 - Mana"]
 
         try:
-            melhoria = int(texto_input("Qual dos atributos deseja melhorar? "))
+            
+            melhoria = int(texto(texto_menu_melhoria, "Qual dos atributos deseja melhorar? ", True))
 
         except ValueError:
-            texto_print("Opção inválida. Por favor, escolha um número entre 1 e 4.")
+            texto("Opção inválida. Por favor, escolha um número entre 1 e 4.", None, True)
             return
-       
+        
         if melhoria == 1:
             quebrar_texto()
-            texto_print("Você recebeu mais 10 de vida maxima")
+            texto("Você recebeu mais 10 de vida maxima", None, False)
             personagem.vida_max += 10
             pnts -= 1
 
         elif melhoria == 2:
             quebrar_texto()
-            texto_print("Você recebeu mais 5 de ataque")
+            texto("Você recebeu mais 5 de ataque", None, False)
             personagem.ataque += 5
             pnts -= 1
 
         elif melhoria == 3:
             quebrar_texto()
-            texto_print("Você recebeu mais 5 de defesa")
+            texto("Você recebeu mais 5 de defesa", None, False)
             personagem.defesa += 5
             pnts -= 1
-      
+
         elif melhoria == 4 and personagem.clase == "Mago":
             quebrar_texto()
-            texto_print("Você recebeu mais 10 de mana maxima")
+            texto("Você recebeu mais 10 de mana maxima", None, False)
             personagem.mana_max += 10
             pnts -= 1
             
         else:
-            texto_print("Opção inválida.")
+            texto("Opção inválida.", None, False)
             continue
-       
+        
         try:
-            continuar = texto_input("Deseja continuar distribuindo pontos? (s/n) ").lower()
+            continuar = texto(None, "Deseja continuar distribuindo pontos? (s/n) ", True)
+            continuar = continuar.lower()
 
         except ValueError:
-            texto_print("Opção inválida. Por favor, responda com  's' ou 'n'.")
+            texto("Opção inválida. Por favor, responda com 's' ou 'n'.", None, False)
             continue
         
         if continuar == "s":
@@ -444,385 +464,387 @@ def aplicar_pontos(pnts):
             break
         
         else:
-           texto_print("Opção inválida. Por favor, responda com 's' ou 'n'.")
-           continue
+            texto("Opção inválida. Por favor, responda com 's' ou 'n'.", None, False)
+            continue
 
 
 def calcular_dano (dano_adicional_personagem, dano_personagem, dano_monstro, defesa_adicional, defesa_personagem, defesa_monstro, elemento_jogador, elemento_monstro, elemento_sala):
-   
-   multiplicador_monstro = 1
-   multiplicador_jogador = 1
-
-   multiplicador_monstro_sala = 1
-   multiplicador_jogador_sala = 1
-
-   if elemento_jogador == elemento_monstro:
-       multiplicador_monstro = 1
-       multiplicador_jogador = 1
-
-   if elemento_sala == elemento_jogador:
-       multiplicador_jogador_sala = 1
-
-   if elemento_sala == elemento_monstro:
-       multiplicador_monstro_sala = 1
-
-   if elemento_jogador != elemento_monstro:
-       
-       if elemento_jogador == "Fogo":
-           if elemento_monstro in ["Água", "Ar", "Terra"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
-
-           elif elemento_monstro in ["Veneno", "Gelo", "Trevas"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
-
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
-
-       elif elemento_jogador == "Água":
-           if elemento_monstro in ["Ar", "Terra", "Natureza"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
-
-           elif elemento_monstro in ["Fogo", "Luz", "Trevas"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
-
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
-
-       elif elemento_jogador == "Ar":
-           if elemento_monstro in ["Terra", "Veneno", "Natureza"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
-
-           elif elemento_monstro in ["Fogo", "Água", "Luz"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
-
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
-
-       elif elemento_jogador == "Terra":
-           if elemento_monstro in ["Veneno", "Gelo", "Raio"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
-
-           elif elemento_monstro in ["Água", "Fogo", "Ar"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
-
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
-
-       elif elemento_jogador == "Natureza":
-           if elemento_monstro in ["Gelo", "Raio", "Veneno"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
-
-           elif elemento_monstro in ["Água", "Ar", "Terra"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
-
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
-
-       elif elemento_jogador == "Veneno":
-           if elemento_monstro in ["Raio", "Gelo", "Luz"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
-
-           elif elemento_monstro in ["Terra", "Fogo", "Ar"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
-
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
-
-       elif elemento_jogador == "Gelo":
-           if elemento_monstro in ["Luz", "Raio", "Trevas"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
+    
+    multiplicador_monstro = 1
+    multiplicador_jogador = 1
+
+    multiplicador_monstro_sala = 1
+    multiplicador_jogador_sala = 1
+
+    if elemento_jogador == elemento_monstro:
+        multiplicador_monstro = 1
+        multiplicador_jogador = 1
+
+    if elemento_sala == elemento_jogador:
+        multiplicador_jogador_sala = 1
+
+    if elemento_sala == elemento_monstro:
+        multiplicador_monstro_sala = 1
+
+    if elemento_jogador != elemento_monstro:
+        
+        if elemento_jogador == "Fogo":
+            if elemento_monstro in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Veneno", "Gelo", "Trevas"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Água":
+            if elemento_monstro in ["Ar", "Terra", "Natureza"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Fogo", "Luz", "Trevas"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Ar":
+            if elemento_monstro in ["Terra", "Veneno", "Natureza"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Fogo", "Água", "Luz"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Terra":
+            if elemento_monstro in ["Veneno", "Gelo", "Raio"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Água", "Fogo", "Ar"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Natureza":
+            if elemento_monstro in ["Gelo", "Raio", "Veneno"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Veneno":
+            if elemento_monstro in ["Raio", "Gelo", "Luz"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
+
+            elif elemento_monstro in ["Terra", "Fogo", "Ar"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
+
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
+
+        elif elemento_jogador == "Gelo":
+            if elemento_monstro in ["Luz", "Raio", "Trevas"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
 
-           elif elemento_monstro in ["Fogo", "Veneno", "Natureza"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
+            elif elemento_monstro in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
 
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
 
-       elif elemento_jogador == "Raio":
-           if elemento_monstro in ["Luz", "Água", "Trevas"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
+        elif elemento_jogador == "Raio":
+            if elemento_monstro in ["Luz", "Água", "Trevas"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
 
-           elif elemento_monstro in ["Fogo", "Gelo", "Natureza"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
+            elif elemento_monstro in ["Fogo", "Gelo", "Natureza"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
 
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
 
-       elif elemento_jogador == "Luz":
-           if elemento_monstro in ["Trevas", "Fogo", "Ar"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
+        elif elemento_jogador == "Luz":
+            if elemento_monstro in ["Trevas", "Fogo", "Ar"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
 
-           elif elemento_monstro in ["Água", "Veneno", "Gelo"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
+            elif elemento_monstro in ["Água", "Veneno", "Gelo"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
 
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
 
-       elif elemento_jogador == "Trevas":
-           if elemento_monstro in ["Fogo", "Água", "Natureza"]:
-               multiplicador_monstro = 0.5
-               multiplicador_jogador = 1.5
+        elif elemento_jogador == "Trevas":
+            if elemento_monstro in ["Fogo", "Água", "Natureza"]:
+                multiplicador_monstro = 0.5
+                multiplicador_jogador = 1.5
 
-           elif elemento_monstro in ["Gelo", "Raio", "Luz"]:
-               multiplicador_monstro = 1.5
-               multiplicador_jogador = 0.5
+            elif elemento_monstro in ["Gelo", "Raio", "Luz"]:
+                multiplicador_monstro = 1.5
+                multiplicador_jogador = 0.5
 
-           else:
-               multiplicador_monstro = 1
-               multiplicador_jogador = 1
+            else:
+                multiplicador_monstro = 1
+                multiplicador_jogador = 1
 
-   if elemento_jogador != elemento_sala:
-       
-       if elemento_jogador == "Fogo":
-           if elemento_sala in ["Água", "Ar", "Terra"]:
-               multiplicador_jogador_sala = 1.5
+    if elemento_jogador != elemento_sala:
+        
+        if elemento_jogador == "Fogo":
+            if elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Veneno", "Gelo", "Trevas"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Veneno", "Gelo", "Trevas"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Água":
-           if elemento_sala in ["Ar", "Terra", "Natureza"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Água":
+            if elemento_sala in ["Ar", "Terra", "Natureza"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Fogo", "Luz", "Trevas"]:
-               multiplicador_jogador_sala = 0.5
-               
-           else:
-               multiplicador_jogador_sala = 1
+            elif elemento_sala in ["Fogo", "Luz", "Trevas"]:
+                multiplicador_jogador_sala = 0.5
+                
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Ar":
-           if elemento_sala in ["Terra", "Veneno", "Natureza"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Ar":
+            if elemento_sala in ["Terra", "Veneno", "Natureza"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Fogo", "Água", "Luz"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Fogo", "Água", "Luz"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Terra":
-           if elemento_sala in ["Veneno", "Gelo", "Raio"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Terra":
+            if elemento_sala in ["Veneno", "Gelo", "Raio"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Água", "Fogo", "Ar"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Água", "Fogo", "Ar"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Natureza":
-           if elemento_sala in ["Gelo", "Raio", "Veneno"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Natureza":
+            if elemento_sala in ["Gelo", "Raio", "Veneno"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Água", "Ar", "Terra"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Veneno":
-           if elemento_sala in ["Raio", "Gelo", "Luz"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Veneno":
+            if elemento_sala in ["Raio", "Gelo", "Luz"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala  in ["Terra", "Fogo", "Ar"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala  in ["Terra", "Fogo", "Ar"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Gelo":
-           if elemento_sala in ["Luz", "Raio", "Trevas"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Gelo":
+            if elemento_sala in ["Luz", "Raio", "Trevas"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala  in ["Fogo", "Veneno", "Natureza"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala  in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Raio":
-           if elemento_sala in ["Luz", "Água", "Trevas"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Raio":
+            if elemento_sala in ["Luz", "Água", "Trevas"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Fogo", "Gelo", "Natureza"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Fogo", "Gelo", "Natureza"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Luz":
-           if elemento_sala in ["Trevas", "Fogo", "Ar"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Luz":
+            if elemento_sala in ["Trevas", "Fogo", "Ar"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Água", "Veneno", "Gelo"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Água", "Veneno", "Gelo"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-       elif elemento_jogador == "Trevas":
-           if elemento_sala in ["Fogo", "Água", "Natureza"]:
-               multiplicador_jogador_sala = 1.5
+        elif elemento_jogador == "Trevas":
+            if elemento_sala in ["Fogo", "Água", "Natureza"]:
+                multiplicador_jogador_sala = 1.5
 
-           elif elemento_sala in ["Gelo", "Raio", "Luz"]:
-               multiplicador_jogador_sala = 0.5
+            elif elemento_sala in ["Gelo", "Raio", "Luz"]:
+                multiplicador_jogador_sala = 0.5
 
-           else:
-               multiplicador_jogador_sala = 1
+            else:
+                multiplicador_jogador_sala = 1
 
-   if elemento_monstro != elemento_sala:
-       
-       if elemento_monstro == "Fogo":
-           if elemento_sala in ["Água", "Ar", "Terra"]:
-               multiplicador_monstro_sala = 1.5
+    if elemento_monstro != elemento_sala:
+        
+        if elemento_monstro == "Fogo":
+            if elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro_sala = 1.5
 
-           elif elemento_sala in ["Veneno", "Gelo", "Trevas"]:
-               multiplicador_monstro_sala = 0.5
+            elif elemento_sala in ["Veneno", "Gelo", "Trevas"]:
+                multiplicador_monstro_sala = 0.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            else:
+                multiplicador_monstro_sala = 1
 
-       elif elemento_monstro == "Água":
-           if elemento_sala in ["Ar", "Terra", "Natureza"]:
-               multiplicador_monstro_sala = 1.5
+        elif elemento_monstro == "Água":
+            if elemento_sala in ["Ar", "Terra", "Natureza"]:
+                multiplicador_monstro_sala = 1.5
 
-           elif elemento_sala in ["Fogo", "Luz", "Trevas"]:
-               multiplicador_monstro_sala = 0.5
+            elif elemento_sala in ["Fogo", "Luz", "Trevas"]:
+                multiplicador_monstro_sala = 0.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            else:
+                multiplicador_monstro_sala = 1
 
-       elif elemento_monstro == "Ar":
-           if elemento_sala in ["Terra", "Veneno", "Natureza"]:
-               multiplicador_monstro_sala = 1.5
+        elif elemento_monstro == "Ar":
+            if elemento_sala in ["Terra", "Veneno", "Natureza"]:
+                multiplicador_monstro_sala = 1.5
 
-           elif elemento_sala in ["Fogo", "Água", "Luz"]:
-               multiplicador_monstro_sala = 0.5
+            elif elemento_sala in ["Fogo", "Água", "Luz"]:
+                multiplicador_monstro_sala = 0.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            else:
+                multiplicador_monstro_sala = 1
 
-       elif elemento_monstro == "Terra":
-           if elemento_sala in ["Veneno", "Gelo", "Raio"]:
-               multiplicador_monstro_sala = 1.5
+        elif elemento_monstro == "Terra":
+            if elemento_sala in ["Veneno", "Gelo", "Raio"]:
+                multiplicador_monstro_sala = 1.5
 
-           elif elemento_sala in ["Água", "Fogo", "Ar"]:
-               multiplicador_monstro_sala = 0.5
+            elif elemento_sala in ["Água", "Fogo", "Ar"]:
+                multiplicador_monstro_sala = 0.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            else:
+                multiplicador_monstro_sala = 1
 
-       elif elemento_monstro == "Natureza":
-           if elemento_sala in ["Gelo", "Raio", "Veneno"]:
-               multiplicador_monstro_sala = 1.5
+        elif elemento_monstro == "Natureza":
+            if elemento_sala in ["Gelo", "Raio", "Veneno"]:
+                multiplicador_monstro_sala = 1.5
 
-           elif elemento_sala in ["Água", "Ar", "Terra"]:
-               multiplicador_monstro_sala = 0.5
+            elif elemento_sala in ["Água", "Ar", "Terra"]:
+                multiplicador_monstro_sala = 0.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            else:
+                multiplicador_monstro_sala = 1
 
-       elif elemento_monstro == "Veneno":
-           if elemento_sala in ["Raio", "Gelo", "Luz"]:
-               multiplicador_monstro_sala = 1.5
+        elif elemento_monstro == "Veneno":
+            if elemento_sala in ["Raio", "Gelo", "Luz"]:
+                multiplicador_monstro_sala = 1.5
 
-           elif elemento_sala  in ["Terra", "Fogo", "Ar"]:
-               multiplicador_monstro_sala = 0.5
+            elif elemento_sala  in ["Terra", "Fogo", "Ar"]:
+                multiplicador_monstro_sala = 0.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            else:
 
-       elif elemento_monstro == "Gelo":
-           if elemento_sala in ["Luz", "Raio", "Trevas"]:
-               multiplicador_monstro_sala = 1.5
+                multiplicador_monstro_sala = 1
 
-           elif elemento_sala  in ["Fogo", "Veneno", "Natureza"]:
-               multiplicador_monstro_sala = 0.5
+        elif elemento_monstro == "Gelo":
+            if elemento_sala in ["Luz", "Raio", "Trevas"]:
+                multiplicador_monstro_sala = 1.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            elif elemento_sala  in ["Fogo", "Veneno", "Natureza"]:
+                multiplicador_monstro_sala = 0.5
 
-       elif elemento_monstro == "Raio":
-           if elemento_sala in ["Luz", "Água", "Trevas"]:
-               multiplicador_monstro_sala = 1.5
+            else:
+                multiplicador_monstro_sala = 1
 
-           elif elemento_sala in ["Fogo", "Gelo", "Natureza"]:
-               multiplicador_monstro_sala = 0.5
+        elif elemento_monstro == "Raio":
+            if elemento_sala in ["Luz", "Água", "Trevas"]:
+                multiplicador_monstro_sala = 1.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            elif elemento_sala in ["Fogo", "Gelo", "Natureza"]:
+                multiplicador_monstro_sala = 0.5
 
-       elif elemento_monstro == "Luz":
-           if elemento_sala in ["Trevas", "Fogo", "Ar"]:
-               multiplicador_monstro_sala = 1.5
+            else:
+                multiplicador_monstro_sala = 1
 
-           elif elemento_sala in ["Água", "Veneno", "Gelo"]:
-               multiplicador_monstro_sala = 0.5
+        elif elemento_monstro == "Luz":
+            if elemento_sala in ["Trevas", "Fogo", "Ar"]:
+                multiplicador_monstro_sala = 1.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            elif elemento_sala in ["Água", "Veneno", "Gelo"]:
+                multiplicador_monstro_sala = 0.5
 
-       elif elemento_monstro == "Trevas":
-           if elemento_sala in ["Fogo", "Água", "Natureza"]:
-               multiplicador_monstro_sala = 1.5
+            else:
+                multiplicador_monstro_sala = 1
 
-           elif elemento_sala in ["Gelo", "Raio", "Luz"]:
-               multiplicador_monstro_sala = 0.5
+        elif elemento_monstro == "Trevas":
+            if elemento_sala in ["Fogo", "Água", "Natureza"]:
+                multiplicador_monstro_sala = 1.5
 
-           else:
-               multiplicador_monstro_sala = 1
+            elif elemento_sala in ["Gelo", "Raio", "Luz"]:
+                multiplicador_monstro_sala = 0.5
 
-   dano_total_jogador = ((dano_personagem + dano_adicional_personagem) * multiplicador_jogador * multiplicador_jogador_sala)
-   dano_final_jogador = int(dano_total_jogador - (dano_total_jogador * defesa_monstro / 100))
+            else:
+                multiplicador_monstro_sala = 1
 
-   dano_total_monstro = (dano_monstro * multiplicador_monstro * multiplicador_monstro_sala)
-   dano_final_monstro = int(dano_total_monstro - (dano_total_monstro * (defesa_personagem + defesa_adicional) / 100))
-   return [dano_final_jogador, dano_final_monstro]
+    dano_total_jogador = ((dano_personagem + dano_adicional_personagem) * multiplicador_jogador * multiplicador_jogador_sala)
+    dano_final_jogador = int(dano_total_jogador - (dano_total_jogador * defesa_monstro / 100))
+
+    dano_total_monstro = (dano_monstro * multiplicador_monstro * multiplicador_monstro_sala)
+    dano_final_monstro = int(dano_total_monstro - (dano_total_monstro * (defesa_personagem + defesa_adicional) / 100))
+    return [dano_final_jogador, dano_final_monstro]
 
 
 while True:
     quebrar_texto()
-    texto_print("RPG elementian \n")
-    start = texto_input("Deseja iniciar jogo? (s/n) ").lower()
-    
+    start = texto("RPG elementian | Pressione Ctrl + C para pular animação de escrita \n",
+    "Deseja iniciar jogo? (s/n)", True)
+    start = start.lower()
+        
     if start == "n":
-        texto_print("\nFechando jogo...")
+        texto("\nFechando jogo...", None, False)
         time.sleep(1)
         exit()
 
     elif start == "s":
         quebrar_texto()
-        texto_print("Crie seu personagem\n")
+        texto("Crie seu personagem\n", None, False)
 
         personagem = Personagem.gerar_personagem()
         if personagem.classe == "Guerreiro":
@@ -835,13 +857,12 @@ while True:
             equipado.append(Item("Cajado Rústico", None, None, 10, None, None))
 
         quebrar_texto()
-        texto_print("Em elementian, existem diversos elementos que definem as propriedades magicas dos seres vivos e ambientes.\n")
-        time.sleep(1)
-        texto_print("Você é um aventureiro que vive em um pequeno vilarejo.\n")
-        time.sleep(1)
-        texto_print("Um dia, saindo para explorar, encontra uma masmorra misteriosa, nela você sente diferentes energias elementais\n \n")
-        time.sleep(1)
-        escolha_sala = texto_input("Deseja entrar na masmorra? (s/n) ").lower()
+        texto_hisotria = ["Em elementian, existem diversos elementos que definem as propriedades magicas dos seres vivos e ambientes.\n",
+                            "Você é um aventureiro que vive em um pequeno vilarejo.\n",
+                            "Um dia, saindo para explorar, encontra uma masmorra misteriosa, nela você sente diferentes energias elementais\n \n"]
+        
+        escolha_sala = texto(texto_hisotria, "Deseja entrar na masmorra? (s/n) ", True)
+        escolha_sala = escolha_sala.lower()
         quebrar_texto()
 
         while True:
@@ -850,48 +871,52 @@ while True:
                 Salas.narrar()
 
             elif escolha_sala == "n":
-                texto_print("Você decide apenas ficar na sala até morrer de causas naturais.\n")
+                texto("Você decide apenas ficar na sala até morrer de causas naturais.\n", None, False)
                 break
             
             else:
-                texto_print("Opção invalida, digite apenas s ou n\n")
+                texto("Opção invalida, digite apenas s ou n\n", None, False)
                 continue
             
             if sala_nova.inimigo:
                 monstro = Monstro.gerar_monstro()
-                texto_print(f"\n Iniciando batalha...\n")
+                texto(f"\n Iniciando batalha...\n", None, False)
                 time.sleep(2)
 
                 while personagem.vida > 0 and monstro.vida > 0:
                     quebrar_texto()
-                    texto_print(f"{personagem.nome} - Vida: {personagem.vida}\n")
-                    texto_print(f"{monstro.tipo} - Vida: {monstro.vida}\n")
-                    texto_print("\nOpções de combate:\n")
-                    texto_print("1 - Atacar\n")
-                    texto_print("2 - Ver inventário\n")
-                    texto_print("3 - Status\n")
-                    texto_print("4 - Fugir\n")
-                    time.sleep(1)
+                    texto_menu = [f"{personagem.nome} - Vida: {personagem.vida}\n",
+                                    f"{monstro.tipo} - Vida: {monstro.vida}\n\n",
+                                    "Opções de combate:\n",
+                                    "1 - Atacar\n ",
+                                    "2 - Ver inventário\n",
+                                    "3 - Status",
+                                    "\n 4 - Fugir\n"]
 
                     try:
-                        escolha_turno = int(texto_input("Escolha sua ação: "))
+                        escolha_turno = texto(texto_menu, "Escolha sua ação: ", True)
+                        escolha_turno = int(escolha_inventario)
 
                         if escolha_turno == 1:
                             
                             if personagem.classe == "Mago":
-                                ataque_mago = texto_input("\nDeseja usar magia? (s/n) ").lower()
+                                ataque_mago = texto(None, "\nDeseja usar magia? (s/n) ", True)
+                                ataque_mago = ataque_mago.lower()
 
                                 if ataque_mago == "s":
-                                    texto_print("\nMagias disponiveis:")
+                                    texto("\nMagias disponiveis:\n", None, False)
 
-                                    for i, magia in enumerate(magias[f"magias_{personagem.elemento.lower()}"], start=1):
-                                        texto_print(f"{i} - {magia.nome} | Dano: {magia.dano} | Custo de Mana: {magia.custo_mana}")
-                                        texto_print(f"Descrição: {magia.descricao}\n")
+                                    personagem.elemento = personagem.elemento.lower()
+
+                                    for i, magia in enumerate(magias[f"magias_{personagem.elemento}"], start=1):
+                                        texto_magias = [f"{i} - {magia.nome} | Dano: {magia.dano} | Custo de Mana: {magia.custo_mana}\n",
+                                                    f"Descrição: {magia.descricao}\n \n"]
+                                        texto(texto_magias, None, False)
 
                                     try:
-                                        escolha_magia = int(texto_input("Escolha uma magia para usar: ")) - 1
+                                        escolha_magia = int(texto(None, "Escolha uma magia para usar: ", True)) - 1
                                         quebrar_texto()
-                                        magia_escolhida = magias[f"magias_{personagem.elemento.lower()}"][escolha_magia]
+                                        magia_escolhida = magias[f"magias_{personagem.elemento}"][escolha_magia]
 
                                         if personagem.mana >= magia_escolhida.custo_mana:
                                             personagem.mana -= magia_escolhida.custo_mana
@@ -904,28 +929,33 @@ while True:
                                                     defesa_adicional = 0
                                                     break    
                                                 
-                                            dano_calculado  = calcular_dano(personagem.buff_forca, personagem.ataque + magia_escolhida.dano, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                    
+                                            dano_calculado  = calcular_dano(personagem.buff_forca, personagem.ataque + magia_escolhida.dano, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elemento)                                    
                                             monstro.vida -= dano_calculado[0]
 
                                         else:
-                                            texto_print("Mana insuficiente para usar essa magia. \n")
+                                            texto("Mana insuficiente para usar essa magia. \n", None, True)
                                             continue
                                         
                                     except (ValueError, IndexError):
-                                        texto_print("Opção inválida. Por favor, escolha uma magia válida. \n")
+                                        texto("Opção inválida. Por favor, escolha uma magia válida. \n", None, True)
                                         continue
                                     
                                 elif ataque_mago == "n":
+
+                                    for objeto in equipado:
+                                        if objeto.tipo_armadura:
+                                            defesa_adicional = objeto.defesa
+
                                     for objeto in equipado:
                                         if objeto.tipo_arma:
                                             dano_arma = objeto.dano
                                             break
                                         
-                                    dano_calculado  = calcular_dano(personagem.buff_forca, personagem.ataque + dano_arma, monstro.ataque, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                    
+                                    dano_calculado  = calcular_dano(personagem.buff_forca, personagem.ataque + dano_arma, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elemento)                                    
                                     monstro.vida -= dano_calculado[0]
 
                                 else:
-                                    texto_print("Opção invalida, digite apeans s ou n\n")
+                                    texto("Opção invalida, digite apeans s ou n\n", None, False)
                                     continue
                                 
                             else:
@@ -937,11 +967,11 @@ while True:
                                 dano_calculado  = calcular_dano(objeto.dano, personagem.ataque + personagem.buff_forca, monstro.ataque, defesa_adicional, personagem.defesa + personagem.buff_defesa, monstro.defesa, personagem.elemento, monstro.elemento, sala_nova.elementos)                                    
                                 monstro.vida -= dano_calculado[0]
 
-                            texto_print(f"Você atacou o {monstro.tipo} causando {dano_calculado[0]} de dano! \n")
+                            texto(f"Você atacou o {monstro.tipo} causando {dano_calculado[0]} de dano! \n", None, False)
                             time.sleep(1)
 
                             personagem.vida -= dano_calculado[1]
-                            texto_print(f"O {monstro.tipo} atacou causando {dano_calculado[1]} de dano! \n")
+                            texto(f"O {monstro.tipo} atacou causando {dano_calculado[1]} de dano! \n", None, False)
                             time.sleep(1)
 
                             if personagem.turnos_buff_forca > 0:
@@ -950,7 +980,7 @@ while True:
                                 if personagem.turnos_buff_forca == 0:
                                     personagem.buff_forca = 0
                                     quebrar_texto()
-                                    texto_print("\nO efeito da Poção de Força acabou.\n")
+                                    texto("\nO efeito da Poção de Força acabou.\n", None, False)
                                     time.sleep(1)
 
                             if personagem.turnos_buff_defesa > 0:
@@ -959,37 +989,47 @@ while True:
                                 if personagem.turnos_buff_defesa == 0:
                                     personagem.buff_defesa = 0
                                     quebrar_texto()
-                                    texto_print("\nO efeito da Poção de Defesa acabou.\n")
+                                    texto("\nO efeito da Poção de Defesa acabou.\n", None, False)
                                     time.sleep(1)
 
                         elif escolha_turno == 2:
                             quebrar_texto()
-                            texto_print("\nInventario:")
+                            
+                            inventario_listado = []
+                            for i in range(len(inventario)): 
+                                item = f"{i+1} - {inventario[i]}\n"
+                                inventario_listado.appendo(item)
+                                time.sleep(0.25)
+                            
+                            texto_inventario_listado = ["\nInventario:"] + inventario_listado
+                                                
 
-                            for i in range(len(inventario)):
-                                texto_print(f"{i+1} - {inventario[i]}")
-                                time.sleep(0.5)
+                            texto(texto_inventario_listado, None, False)
 
                             print("\n")
-                            texto_print("Equipados:")
 
+                            equipado_listado = []
                             for i in range(len(equipado)):
-                                texto_print(f"{i+1} - {equipado[i]}")
-                                time.sleep(0.5)
+                                item = f"{i+1} - {equipado[i]}\n"
+                                equipado_listado.append(item)
+                                time.sleep(0.25)
 
-                            quebrar_texto()
-                            texto_print("Menu de ações do inventario:\n")
-                            texto_print("1 - Equipar item do inventario\n")
-                            texto_print("2 - Remover item equipado\n")
-                            texto_print("3 - Consumir item do inventario\n")
-                            texto_print("4 - Apagar item\n")
-                            texto_print("5 - Sair\n")
+                            texto_equipado_listado = ["Equipados: \n"] + equipado_listado
+
+                            texto(texto_equipado_listado, None, False)
+
+                            texto_menu_inventario = ["Menu de ações do inventario:\n",
+                            "1 - Equipar item do inventario\n",
+                            "2 - Remover item equipado\n",
+                            "3 - Consumir item do inventario\n",
+                            "4 - Apagar item\n",
+                            "5 - Sair\n"]
 
                             try:
-                                escolha_inventario = int(texto_input("Escolha uma das opções: "))
+                                escolha_inventario = texto(texto_menu, "Escolha uma das opções: ", True)
                                 
                                 if escolha_inventario == 1:
-                                    item_equipar = int(texto_input("Escolha um dos itens do seu inventario: "))
+                                    item_equipar = int(texto(None, "Escolha um dos itens do seu inventario: ", True))
                                     item_equipar -= 1
                                     item = inventario[item_equipar]
 
@@ -997,68 +1037,69 @@ while True:
                                         for objeto in equipado:
                                             
                                             if objeto.tipo_arma:
-                                                texto_print("Você já possui uma arma.\n")
+                                                texto("Você já possui uma arma.\n", None, False)
                                                 break
                                             else:
                                                 equipado.append(item)
-                                                texto_print("Você equipou o item\n")
+                                                texto("Você equipou o item\n", None, True)
 
                                     elif item.tipo_armadura:
                                         for objeto in equipado:
                                             
                                             if objeto.tipo_armadura:
-                                                texto_print("Você já possui uma armadura.\n")
+                                                texto("Você já possui uma armadura.\n", None, True)
                                                 break
                                             
                                             else:
                                                 equipado.append(item)
-                                                texto_print("Você equipou o item\n")
+                                                texto("Você equipou o item\n", None, True)
 
                                     elif item.tipo_pocao:
-                                        texto_print("Não é possivel equipar poções\n")
+                                        texto("Não é possivel equipar poções\n", None, True)
 
                                 elif escolha_inventario == 2:
                                     
-                                    item_remover = int(texto_input("Escolha um item equipado para remover: "))
+                                    item_remover = int(texto(None, "Escolha um item equipado para remover: ", True))
                                     item_remover -= 1
                                     item = equipado[item_remover]
 
                                     equipado.remove(item)
                                     inventario.append(item)
-                                    texto_print("\nItem removido dos equipados")
+                                    texto("\nItem removido dos equipados\n", None, False)
 
                                 elif escolha_inventario == 3:
-                                    item_consumir = int(texto_input("Escolha item para consumir: "))
+                                    item_consumir = int(texto(None, "Escolha item para consumir: ", False))
                                     item_consumir -= 1
                                     item = inventario[item_consumir]
 
                                     if item.tipo_pocao:
-                                        escolha_pocao = texto_input("\nDeseja consumir essa poção? (s/n) ").lower()
+                                        escolha_pocao = texto(None, "\nDeseja consumir essa poção? (s/n) ", False)
+                                        escolha_pocao = escolha_pocao.lower()
 
                                         if escolha_pocao == "s":
                                             
                                             if item.tipo_pocao == "Poção de vida":
                                                 
                                                 if personagem.vida == personagem.vida_max:
-                                                    texto_print("Você já possui vida máxima, não é possivel consumir essa poção\n")
+                                                    texto("Você já possui vida máxima, não é possivel consumir essa poção\n", None, False)
                                                     continue
                                                 
-                                                elif personagem.vida > personagem.vida_max:
+                                                if personagem.vida > personagem.vida_max:
                                                     personagem.vida += item.efeito
 
                                                     if personagem.vida > personagem.vida_max:
                                                         personagem.vida = personagem.vida_max
-                                                        texto_print("Você possui vida máxima\n")
+                                                        texto("Você possui vida máxima\n", None, False)
                                                         continue
                                                     
                                                     else:
-                                                        texto_print(f"Você recuperou {item.efeito} de vida\n")
+                                                        texto(f"Você recuperou {item.efeito} de vida\n", None, False)
                                                         continue
                                                     
                                             elif item.tipo_pocao == "Poção de mana":
                                                 
                                                 if personagem.mana == personagem.mana_max:
-                                                    texto_print("Você já possui vida máxima, não é possivel consumir essa poção\n")
+                                                    texto("Você já possui vida máxima, não é possivel consumir essa poção\n", None, False)
                                                     continue
                                                 
                                                 elif personagem.mana > personagem.mana_max:
@@ -1066,11 +1107,11 @@ while True:
 
                                                     if personagem.mana > personagem.mana_max:
                                                         personagem.mana = personagem.mana_max
-                                                        texto_print("Você possui mana máxima\n")
+                                                        texto("Você possui mana máxima\n", None, False)
                                                         continue
                                                     
                                                     else:
-                                                        texto_print(f"Você recuperou {item.efeito} de mana\n")
+                                                        texto(f"Você recuperou {item.efeito} de mana\n", None, False)
                                                         continue
                                                     
                                             elif item.tipo_pocao == "Poção de força":
@@ -1085,13 +1126,14 @@ while True:
                                             inventario.remove(item)
 
                                         else:
-                                            texto_print("Você não pode consumir itens comuns, apenas poções\n")
+                                            texto("Você não pode consumir itens comuns, apenas poções\n", None, False)
                                             continue
 
                                 elif escolha_inventario == 4:
-                                    item_apagar = int(texto_input("Escolha um item para apagar: "))
+                                    item_apagar = int(texto(None, "Escolha um item para apagar: ", True))
                                     item_apagar -= 1
-                                    confirmar_delet = texto_input("Tem certeza que deseja apagar este item? (s/n) ").lower()
+                                    confirmar_delet = texto(None, "Tem certeza que deseja apagar este item? (s/n) ", True)
+                                    confirmar_delet = confirmar_delet.lower()
 
                                     if confirmar_delet == "s":
                                         inventario.remove(inventario[item_apagar])
@@ -1100,45 +1142,45 @@ while True:
                                         continue
                                     
                                     else:
-                                        texto_print("Opção invalida\n")
+                                        texto("Opção invalida\n", None, False)
                                         continue
                                     
                                 elif escolha_inventario == 5:
                                     continue
                                 
                                 else:
-                                    texto_print("Opção invalida\n")
+                                    texto("Opção invalida\n", None, False)
                                     continue
                                 
                             except ValueError:
-                                texto_print("opção invalida, use apenas números\n")
+                                texto("opção invalida, use apenas números\n", None, False)
 
                         elif escolha_turno == 3:
                             quebrar_texto()
-                            texto_print(f"{personagem.nome}\n")
-                            texto_print(f"lvl: {personagem.level} | exp: {personagem.exp}/{personagem.min_exp}\n")
-                            texto_print(f"Classe: {personagem.classe}\n")
-                            texto_print(f"Vida: {personagem.vida}\n")
-                            texto_print(f"Mana: {personagem.mana}\n")
-                            texto_print(f"Ataque: {personagem.ataque}\n")
-                            texto_print(f"Defesa: {personagem.defesa}\n \n")
+                            texto_status = [f"{personagem.nome}\n",
+                            f"lvl: {personagem.level} | exp: {personagem.exp}/{personagem.min_exp}\n",
+                            f"Classe: {personagem.classe}\n",
+                            f"Vida: {personagem.vida}\n",
+                            f"Mana: {personagem.mana}\n",
+                            f"Ataque: {personagem.ataque}\n",
+                            f"Defesa: {personagem.defesa}\n \n",
 
-                            texto_print(f"{monstro.tipo} \n")
-                            texto_print(f"Vida: {monstro.vida}\n")
-                            texto_print(f"Ataque: {monstro.ataque}\n")
-                            texto_print(f"Defesa: {monstro.defesa}\n")
+                            f"{monstro.tipo} \n",
+                            f"Vida: {monstro.vida}\n",
+                            f"Ataque: {monstro.ataque}\n",
+                            f"Defesa: {monstro.defesa}\n"]
 
                         elif escolha_turno == 4:
-                            texto_print("Você foge da luta e para de lutar com o monstro\n")
+                            texto("Você foge da luta e para de lutar com o monstro\n", None, False)
                             break
                         
                     except ValueError:
-                        texto_print("opção invalida, use apenas números\n")
+                        texto("opção invalida, use apenas números\n", None, False)
 
                 if personagem.vida <= 0:
                     quebrar_texto()
-                    texto_print("Você morreu, fim de jogo.\n")
-                    recomecar = input("Deseja recomeçar o jogo? (s/n) ").lower()
+                    recomecar = texto("Você morreu, fim de jogo.\n", "Deseja recomeçar o jogo? (s/n) ", True)
+                    recomecar = recomecar.lower()
 
                     if recomecar == "s":
                         inventario.clear()
@@ -1150,32 +1192,33 @@ while True:
 
                 if monstro.vida <= 0:
                     quebrar_texto()
-                    texto_print(f"Você derrotou o {monstro.tipo} e recebeu {monstro.exp} de experiência\n")
+                    texto(f"Você derrotou o {monstro.tipo} e recebeu {monstro.exp} de experiência\n", None, False)
                     aplicar_exp()
                     aplicar_pontos(personagem.pontos)
 
-                    if sala_nova.recompensa:
-                        texto_input("\nPressione ENTER para ver a recompensa...")
-                        tamanho = Recompensas.narrar_recompensa(tamanho_recompensa)
+            if sala_nova.recompensa:
+                texto("\nPressione ENTER para ver a recompensa...", None, False)
+                tamanho = Recompensas.narrar_recompensa(tamanho_recompensa)
 
-                        if tamanho == "Pequeno":
-                            quantidade = 1
+                if tamanho == "Pequeno":
+                    quantidade = 1
 
-                        elif tamanho == "Médio":
-                            quantidade = 2
+                elif tamanho == "Médio":
+                    quantidade = 2
 
-                        elif tamanho == "Grande":
-                            quantidade = 3
+                elif tamanho == "Grande":
+                    quantidade = 3
 
-                        texto_input("\nPressione ENTER para coletar recompensa...")
+                texto("\nPressione ENTER para coletar recompensa...", None, False)
 
-                        for i in range(quantidade):
-                            item = Item.narrar_item()
-                            inventario.append(item)
-                    else:
-                        pass
-                    
-            escolha_sala = texto_input("\nDeseja entrar na proxima sala? (s/n)").lower()
+                for i in range(quantidade):
+                    item = Item.narrar_item()
+                    inventario.append(item)
+            else:
+                pass
+            
+            escolha_sala = texto(None, "\nDeseja entrar na proxima sala? (s/n)", False)
+            escolha_sala = escolha_sala.lower()
 
     else:
-        texto_print("Opção invalida, digite apenas")    
+        texto("Opção invalida, digite apenas", None, False)    
